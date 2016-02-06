@@ -22,7 +22,7 @@ $(function() {
          * in the allFeeds object and ensures it has a URL defined
          * and that the URL is not empty.
          */
-        it('have defined urls', function() {
+        it('have defined and nonempty urls', function() {
             allFeeds.forEach(function (feed) {
                 expect(feed.url).toBeDefined();
                 expect(feed.url.length).not.toBe(0);
@@ -49,9 +49,10 @@ $(function() {
          * the CSS to determine how we're performing the
          * hiding/showing of the menu element.
          */
+        var body = $('body');
 
         it('is hidden by default', function() {
-            expect(document.body.className).toBe("menu-hidden");
+            expect(body.hasClass('menu-hidden')).toBeTruthy();
         });
 
          /* Test that ensures the menu changes
@@ -64,9 +65,9 @@ $(function() {
         it('closes and opens', function() {
 
             menuIcon.trigger('click');
-            expect(document.body.className).not.toContain("menu-hidden");
+            expect(body.hasClass('menu-hidden')).toBeFalsy();
             menuIcon.trigger('click');
-            expect(document.body.className).toContain("menu-hidden");
+            expect(body.hasClass('menu-hidden')).toBeTruthy();
             
         });
     });
@@ -80,14 +81,13 @@ $(function() {
          * the use of Jasmine's beforeEach and asynchronous done() function.
          */
         
-        beforeEach(function(done) {
-            loadFeed(0, done);
+        beforeEach(function() {
+            loadFeed(0);
         });
 
-        it('are not empty', function(done) {
+        it('are not empty', function() {
             var container = $('.feed');
             expect(container.length).not.toBe(0);
-            done();
         });
     });
 
@@ -98,9 +98,7 @@ $(function() {
          * Remember, loadFeed() is asynchronous.
          */
 
-        var menuIcon = $('.menu-icon-link');
         var entry = $('.entry-link');
-        var feedListItem = $("a[data-id='1']");
         var origFeed = '';
         var newFeed = '';
 
@@ -109,17 +107,14 @@ $(function() {
                 origFeed = entry.context.links[5].href;
                 loadFeed(1, function() {
                     newFeed = entry.context.links[5].href;
-                    done()
-                })
+                    done();
+                });
             
-            })
-        })
+            });
+        });
 
-        it('changes content on new feed load', function(done) {
-            console.log('origFeed=' + origFeed);
-            console.log('newFeed=' + newFeed);
+        it('changes content on new feed load', function() {
             expect(newFeed).not.toBe(origFeed);
-            done();
         });
 
     });
